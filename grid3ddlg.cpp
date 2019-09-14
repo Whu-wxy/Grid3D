@@ -34,27 +34,27 @@ Grid3dDlg::Grid3dDlg()
 
     sliderH->setTickInterval(1);
     sliderH->setRange(0, 300);
-    sliderH->setValue(0);
+    sliderH->setValue(144);
     sliderH->setSliderPosition(144);
     // //////////////////////////
     sliderAngle->setTickInterval(1);
-    sliderAngle->setRange(20, 180);
-    sliderAngle->setValue(0);
+    sliderAngle->setRange(10, 180);
+    sliderAngle->setValue(30);
     sliderAngle->setSliderPosition(30);
 
-    sliderRatio->setTickInterval(0.1);
-    sliderRatio->setRange(0, 20);
-    sliderRatio->setValue(0);
-    sliderRatio->setSliderPosition(0);
+    sliderRatio->setTickInterval(1);
+    sliderRatio->setRange(1, 30);
+    sliderRatio->setValue(10);
+    sliderRatio->setSliderPosition(10);
 
     sliderNearPlane->setTickInterval(1);
     sliderNearPlane->setRange(0, 200);
-    sliderNearPlane->setValue(0);
+    sliderNearPlane->setValue(288-100*1.732);
     sliderNearPlane->setSliderPosition(288-100*1.732);
 
     sliderNarPlane->setTickInterval(1);
     sliderNarPlane->setRange(0, 500);
-    sliderNarPlane->setValue(0);
+    sliderNarPlane->setValue(288);
     sliderNarPlane->setSliderPosition(288);
 
     QHBoxLayout* mainLay = new QHBoxLayout(this);
@@ -130,20 +130,21 @@ void Grid3dDlg::setAngle(int val)
 
 void Grid3dDlg::setRatio(int val)
 {
-    w->aspectRatio = val;
+    w->aspectRatio = val/10.0;
+     qDebug()<<"aspectRatio:"<<w->aspectRatio;
     w->update();
 }
 
 void Grid3dDlg::setNearPlane(int val)
 {
     w->nearPlane = val;
-    qDebug()<<"near:"<<val;
+//    qDebug()<<"near:"<<val;
     w->update();
 }
 
 void Grid3dDlg::setNarPlane(int val)
 {
-    qDebug()<<"far:"<<val;
+//    qDebug()<<"far:"<<val;
     w->farPlane = val;
     w->update();
 }
