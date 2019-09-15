@@ -9,7 +9,7 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
     rotateY = 0;
     rotateZ = 0;
 
-    verticalAngle = 30;
+    verticalAngle = 90;
     aspectRatio = 16/9.0;
     nearPlane = 0.1;
     farPlane = 1000;
