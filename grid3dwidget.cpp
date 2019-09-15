@@ -1,4 +1,5 @@
 #include "grid3dwidget.h"
+#include <math.h>
 
 Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
@@ -37,7 +38,7 @@ void Grid3DWidget::paintGrid(QPainter* painter)
 {
     float step = 40;
     float maxDis = h/tan(-rotateX*M_PI/180);
-    qDebug()<<"maxDis"<<maxDis<<"......................\n";
+    painter->drawText(QPoint(0, this->height()/2), QString::number(maxDis));
     float minDis = 0;
 
     float maxZVal = maxDis/cos(rotateX*M_PI/180);
