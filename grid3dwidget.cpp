@@ -4,14 +4,15 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
 {
     h = 144;
-    rotateX = 30;
+    rotateX = 0;
     rotateY = 0;
     rotateZ = 0;
 
-    verticalAngle = 20;
+    verticalAngle = 30;
     aspectRatio = 1;
-    nearPlane = 288-100*1.732;
-    farPlane = 288;
+    nearPlane = 10;
+    farPlane = 300;
+
     update();
 }
 
@@ -107,49 +108,63 @@ void Grid3DWidget::paintEvent(QPaintEvent*)
 
 void Grid3DWidget::paintGrid(QPainter* painter)
 {
-    float step = 50;
-    float maxDis = 600;
-    float minDis = -200;
+    float step = 40;
+    float maxDis = h/tan(-rotateX*M_PI/180);
+    qDebug()<<"maxDis"<<maxDis<<"......................\n";
+    float minDis = -400;
+
+    float maxZVal = maxDis/cos(rotateX*M_PI/180);
+    float minZVal = maxZVal-(maxDis-minDis)*cos(rotateX*M_PI/180);
 
     QMatrix4x4 mat;
 
-
-    //mat.scale(double(this->width())/(maxDis-minDis));
-//  qDebug()<<double(this->width())/(maxDis-minDis);
-
-mat.translate(this->width()/2, this->height(), 0);//this->width()/2, this->height()/2 //239, 339
+    mat.translate(this->width()/2, this->height(), 0);//this->width()/2, this->height()/2
     mat.rotate(rotateX, 1, 0, 0);
     mat.rotate(rotateY, 0, 1, 0);
     mat.rotate(rotateZ, 0, 0, 1);
 
-mat.translate(0,0, h);
+    mat.translate(0,0, -h);
 
-        mat.scale(50);
+
+
+//    qDebug()<<"factor: "<<factor;
+
+    mat.scale(100*96/2.45/20);//100*96/2.45/10
 
     mat.perspective(verticalAngle,aspectRatio,nearPlane,farPlane); //aspectRatio
 
-    float maxZVal = maxDis/cos(rotateX*M_PI/180);
-    float minZVal = maxZVal-(maxDis-minDis)*cos(rotateX*M_PI/180);
+    QVector3D pFar(0, maxDis, maxZVal);
+    QPointF pF = mat.map(pFar).toPointF();
+    float near2FarDis = maxDis * sin(verticalAngle*M_PI/180/2) / sin((rotateX+verticalAngle/2)*M_PI/180);
+    QVector3D pNear(0, maxDis-near2FarDis, maxZVal-near2FarDis*cos(rotateX*M_PI/180));
+    QPointF pN = mat.map(pNear).toPointF();
+    double factor = this->height()/2 / fabs(pF.y()-pN.y());
+
+
+
+   // mat.translate(this->width()/2-pF.x(), this->height()/2-pF.y(), 0);
+
+
     for(int i=maxDis; i>=minDis; i-=step)
     {
         float zVal = maxZVal-(maxDis-i)*cos(rotateX*M_PI/180);
 
         QVector3D pH1(-(maxDis-minDis)/2, i, zVal);
-        QPoint ph1 = mat.map(pH1).toPoint();
+        QPointF ph1 = mat.map(pH1).toPointF();
         QVector3D pH2((maxDis-minDis)/2, i, zVal);
-        QPoint ph2 = mat.map(pH2).toPoint();
+        QPointF ph2 = mat.map(pH2).toPointF();
 
         QVector3D pV1((i-minDis)/2, maxDis, maxZVal);
-        QPoint pv1 = mat.map(pV1).toPoint();
+        QPointF pv1 = mat.map(pV1).toPointF();
         QVector3D pV2((i-minDis)/2, minDis, minZVal);
-        QPoint pv2 = mat.map(pV2).toPoint();
+        QPointF pv2 = mat.map(pV2).toPointF();
 
         QVector3D pV3(-(i-minDis)/2, maxDis, maxZVal);
-        QPoint pv3 = mat.map(pV3).toPoint();
+        QPointF pv3 = mat.map(pV3).toPointF();
         QVector3D pV4(-(i-minDis)/2, minDis, minZVal);
-        QPoint pv4 = mat.map(pV4).toPoint();
+        QPointF pv4 = mat.map(pV4).toPointF();
 
-//qDebug()<<this->width()<<this->height();
+        painter->translate(this->width()/2-pF.x(), this->height()/2-pF.y());
         // H line
         painter->drawLine(ph1, ph2);
         // V line

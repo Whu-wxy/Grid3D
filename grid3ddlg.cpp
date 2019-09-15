@@ -18,8 +18,8 @@ Grid3dDlg::Grid3dDlg()
     sliderNarPlane = new QSlider(this);
 
     sliderX->setTickInterval(1);
-    sliderX->setRange(-180, 180);
-    sliderX->setValue(0);
+    sliderX->setRange(0, 90);
+    sliderX->setValue(30);
     sliderX->setSliderPosition(30);
 
     sliderY->setTickInterval(1);
@@ -33,12 +33,12 @@ Grid3dDlg::Grid3dDlg()
     sliderZ->setSliderPosition(0);
 
     sliderH->setTickInterval(1);
-    sliderH->setRange(0, 300);
+    sliderH->setRange(0, 500);
     sliderH->setValue(144);
     sliderH->setSliderPosition(144);
     // //////////////////////////
     sliderAngle->setTickInterval(1);
-    sliderAngle->setRange(10, 180);
+    sliderAngle->setRange(5, 180);
     sliderAngle->setValue(30);
     sliderAngle->setSliderPosition(30);
 
@@ -48,14 +48,14 @@ Grid3dDlg::Grid3dDlg()
     sliderRatio->setSliderPosition(10);
 
     sliderNearPlane->setTickInterval(1);
-    sliderNearPlane->setRange(0, 200);
-    sliderNearPlane->setValue(288-100*1.732);
-    sliderNearPlane->setSliderPosition(288-100*1.732);
+    sliderNearPlane->setRange(0, 20);
+    sliderNearPlane->setValue(10);
+    sliderNearPlane->setSliderPosition(10);
 
     sliderNarPlane->setTickInterval(1);
-    sliderNarPlane->setRange(0, 500);
-    sliderNarPlane->setValue(288);
-    sliderNarPlane->setSliderPosition(288);
+    sliderNarPlane->setRange(0, 5000);
+    sliderNarPlane->setValue(300);
+    sliderNarPlane->setSliderPosition(300);
 
     QHBoxLayout* mainLay = new QHBoxLayout(this);
 
@@ -99,7 +99,7 @@ Grid3dDlg::Grid3dDlg()
 
 void Grid3dDlg::setRotateX(int val)
 {
-    w->rotateX = val;
+    w->rotateX = -val;
     w->update();
 }
 
@@ -137,7 +137,7 @@ void Grid3dDlg::setRatio(int val)
 
 void Grid3dDlg::setNearPlane(int val)
 {
-    w->nearPlane = val;
+    w->nearPlane = val/1000.0;
 //    qDebug()<<"near:"<<val;
     w->update();
 }
