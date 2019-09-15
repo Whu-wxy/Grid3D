@@ -34,8 +34,8 @@ Grid3dDlg::Grid3dDlg()
 
     sliderH->setTickInterval(1);
     sliderH->setRange(0, 500);
-    sliderH->setValue(144);
-    sliderH->setSliderPosition(144);
+    sliderH->setValue(200);
+    sliderH->setSliderPosition(200);
     // //////////////////////////
     sliderAngle->setTickInterval(1);
     sliderAngle->setRange(5, 180);
@@ -64,22 +64,39 @@ Grid3dDlg::Grid3dDlg()
     QLabel* yLab = new QLabel("Y");
     QLabel* zLab = new QLabel("Z");
     QLabel* hLab = new QLabel("H");
+    labX = new QLabel("");
+    labY = new QLabel("");
+    labZ = new QLabel("");
+    labH = new QLabel("");
     LeftLay->addWidget(xLab, 0, 0, 1, 1, Qt::AlignCenter);
     LeftLay->addWidget(yLab, 0, 1, 1, 1, Qt::AlignCenter);
     LeftLay->addWidget(zLab, 0, 2, 1, 1, Qt::AlignCenter);
     LeftLay->addWidget(hLab, 0, 3, 1, 1, Qt::AlignCenter);
-    LeftLay->addWidget(sliderX, 1, 0, 1, 1);
-    LeftLay->addWidget(sliderY, 1, 1, 1, 1);
-    LeftLay->addWidget(sliderZ, 1, 2, 1, 1);
-    LeftLay->addWidget(sliderH, 1, 3, 1, 1);
+    LeftLay->addWidget(labX, 1, 0, 1, 1);
+    LeftLay->addWidget(labY, 1, 1, 1, 1);
+    LeftLay->addWidget(labZ, 1, 2, 1, 1);
+    LeftLay->addWidget(labH, 1, 3, 1, 1);
+    LeftLay->addWidget(sliderX, 2, 0, 1, 1);
+    LeftLay->addWidget(sliderY, 2, 1, 1, 1);
+    LeftLay->addWidget(sliderZ, 2, 2, 1, 1);
+    LeftLay->addWidget(sliderH, 2, 3, 1, 1);
+
+    labX->setText(QString::number(sliderX->value()));
+    labY->setText(QString::number(sliderY->value()));
+    labZ->setText(QString::number(sliderZ->value()));
+    labH->setText(QString::number(sliderH->value()));
 
     QGridLayout* RightLay = new QGridLayout;
     QLabel* perspLab = new QLabel("透视变换");
+    labAngle = new QLabel(this);
     RightLay->addWidget(perspLab, 0, 0, 1, 4, Qt::AlignCenter);
-    RightLay->addWidget(sliderAngle, 1, 0, 1, 1);
-    RightLay->addWidget(sliderRatio, 1, 1, 1, 1);
-    RightLay->addWidget(sliderNearPlane, 1, 2, 1, 1);
-    RightLay->addWidget(sliderNarPlane, 1, 3, 1, 1);
+    RightLay->addWidget(labAngle, 1, 0, 1, 4, Qt::AlignCenter);
+    RightLay->addWidget(sliderAngle,    2, 0, 1, 1);
+    RightLay->addWidget(sliderRatio,    2, 1, 1, 1);
+    RightLay->addWidget(sliderNearPlane,2, 2, 1, 1);
+    RightLay->addWidget(sliderNarPlane, 2, 3, 1, 1);
+
+    labAngle->setText(QString::number(sliderAngle->value()));
 
     mainLay->addLayout(LeftLay);
     mainLay->addWidget(w);
@@ -101,24 +118,28 @@ void Grid3dDlg::setRotateX(int val)
 {
     w->rotateX = -val;
     w->update();
+    labX->setText(QString::number(sliderX->value()));
 }
 
 void Grid3dDlg::setRotateY(int val)
 {
     w->rotateY = val;
     w->update();
+    labY->setText(QString::number(sliderY->value()));
 }
 
 void Grid3dDlg::setRotateZ(int val)
 {
     w->rotateZ = val;
     w->update();
+    labZ->setText(QString::number(sliderZ->value()));
 }
 
 void Grid3dDlg::setRotateH(int val)
 {
     w->h = val;
     w->update();
+    labH->setText(QString::number(sliderH->value()));
 }
 
 // ///////////////
@@ -126,25 +147,23 @@ void Grid3dDlg::setAngle(int val)
 {
     w->verticalAngle = val;
     w->update();
+    labAngle->setText(QString::number(sliderAngle->value()));
 }
 
 void Grid3dDlg::setRatio(int val)
 {
     w->aspectRatio = val/10.0;
-     qDebug()<<"aspectRatio:"<<w->aspectRatio;
     w->update();
 }
 
 void Grid3dDlg::setNearPlane(int val)
 {
     w->nearPlane = val/1000.0;
-//    qDebug()<<"near:"<<val;
     w->update();
 }
 
 void Grid3dDlg::setNarPlane(int val)
 {
-//    qDebug()<<"far:"<<val;
     w->farPlane = val;
     w->update();
 }

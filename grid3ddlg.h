@@ -33,6 +33,12 @@ public:
     QSlider* sliderNearPlane;
     QSlider* sliderNarPlane;
 
+    QLabel*  labX;
+    QLabel*  labY;
+    QLabel*  labZ;
+    QLabel*  labH;
+    QLabel*  labAngle;
+
 
 
 protected slots:
