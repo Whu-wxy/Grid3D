@@ -5,7 +5,7 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
 {
     h = 200;
-    rotateX = 30;
+    rotateX = -30;
     rotateY = 0;
     rotateZ = 0;
 
@@ -56,7 +56,9 @@ void Grid3DWidget::paintGrid(QPainter* painter)
 
     QVector3D pFar(0, maxDis, maxZVal);
     QPointF pF = mat.map(pFar).toPointF();
-    float near2FarDis = maxDis * sin(verticalAngle*M_PI/180/2) / sin((rotateX+verticalAngle/2)*M_PI/180);
+    float near2FarDis = maxDis * sin(verticalAngle*M_PI/180/2) / sin((-rotateX+verticalAngle/2)*M_PI/180);//地面上中心点与最近点米数
+    painter->drawText(QPoint(0, this->height()), QString::number(maxDis-near2FarDis));
+
     QVector3D pNear(0, maxDis-near2FarDis, maxZVal-near2FarDis*cos(rotateX*M_PI/180));
     QPointF pN = mat.map(pNear).toPointF();
     double factor = this->height()/2 / fabs(pF.y()-pN.y());
