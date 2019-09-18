@@ -46,19 +46,12 @@ void Grid3DWidget::paintGrid(QPainter* painter)
 
     QMatrix4x4 mat;
 
-    mat.translate(this->width()/2, this->height(), 0);//this->width()/2, this->height()/2
+    mat.translate(this->width()/2, this->height(), 0);
     mat.rotate(rotateX, 1, 0, 0);
     mat.rotate(rotateY, 0, 1, 0);
     mat.rotate(rotateZ, 0, 0, 1);
-
     mat.translate(0,0, -h);
-
-   // mat.scale(100*96/2.45/20);//100*96/2.45/10
-
-
-
-    mat.perspective(verticalAngle,aspectRatio,nearPlane,farPlane); //aspectRatio
-   // mat.perspective(45,16.0/9,0.1,1000); //aspectRatio
+    mat.perspective(verticalAngle,aspectRatio,nearPlane,farPlane);
 
 
     QVector3D pFar(0, maxDis, maxZVal);
@@ -67,14 +60,8 @@ void Grid3DWidget::paintGrid(QPainter* painter)
     QVector3D pNear(0, maxDis-near2FarDis, maxZVal-near2FarDis*cos(rotateX*M_PI/180));
     QPointF pN = mat.map(pNear).toPointF();
     double factor = this->height()/2 / fabs(pF.y()-pN.y());
-//    qDebug()<<"factor: "<<factor;
 
-//qDebug()<<"width:"<<this->width();
-//qDebug()<<"height:"<<this->height();
-
-   // mat.translate(this->width()/2-pF.x(), this->height()/2-pF.y(), 0);
-
-painter->translate(this->width()/2-pF.x(), this->height()/2-pF.y());//this->width()/2-pF.x()
+    painter->translate(this->width()/2-pF.x(), this->height()/2-pF.y());
     for(int i=maxDis; i>=minDis; i-=step)
     {
         float zVal = maxZVal-(maxDis-i)*cos(rotateX*M_PI/180);
@@ -84,6 +71,12 @@ painter->translate(this->width()/2-pF.x(), this->height()/2-pF.y());//this->widt
         QVector3D pH2((maxDis-minDis)/2, i, zVal);
         QPointF ph2 = mat.map(pH2).toPointF();
 
+        // H line
+        painter->drawLine(QPoint(pF.x()+(ph1.x()-pF.x())*factor, pF.y()+(ph1.y()-pF.y())*factor),
+                          QPoint(pF.x()+(ph2.x()-pF.x())*factor, pF.y()+(ph2.y()-pF.y())*factor));
+    }
+    for(int i=minDis; i<=maxDis; i+=step)
+    {
         //右竖线
         QVector3D pV1((i-minDis)/2, maxDis, maxZVal);
         QPointF pv1 = mat.map(pV1).toPointF();
@@ -96,16 +89,6 @@ painter->translate(this->width()/2-pF.x(), this->height()/2-pF.y());//this->widt
         QVector3D pV4(-(i-minDis)/2, minDis, minZVal);
         QPointF pv4 = mat.map(pV4).toPointF();
 
-
-//        // H line
-//        painter->drawLine(ph1, ph2);
-//        // V line
-//        painter->drawLine(pv1, pv2);
-//        painter->drawLine(pv3, pv4);
-
-        // H line
-        painter->drawLine(QPoint(pF.x()+(ph1.x()-pF.x())*factor, pF.y()+(ph1.y()-pF.y())*factor),
-                          QPoint(pF.x()+(ph2.x()-pF.x())*factor, pF.y()+(ph2.y()-pF.y())*factor));
         // V line
         painter->drawLine(QPoint(pF.x()+(pv1.x()-pF.x())*factor, pF.y()+(pv1.y()-pF.y())*factor),
                           QPoint(pF.x()+(pv2.x()-pF.x())*factor, pF.y()+(pv2.y()-pF.y())*factor));
