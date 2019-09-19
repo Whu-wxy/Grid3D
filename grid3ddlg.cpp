@@ -116,7 +116,8 @@ Grid3dDlg::Grid3dDlg()
 
 void Grid3dDlg::setRotateX(int val)
 {
-    w->rotateX = -val;
+    w->rotateX = val;
+    w->papareData();
     w->update();
     labX->setText(QString::number(sliderX->value()));
 }
@@ -124,6 +125,7 @@ void Grid3dDlg::setRotateX(int val)
 void Grid3dDlg::setRotateY(int val)
 {
     w->rotateY = val;
+    w->papareData();
     w->update();
     labY->setText(QString::number(sliderY->value()));
 }
@@ -131,6 +133,7 @@ void Grid3dDlg::setRotateY(int val)
 void Grid3dDlg::setRotateZ(int val)
 {
     w->rotateZ = val;
+    w->papareData();
     w->update();
     labZ->setText(QString::number(sliderZ->value()));
 }
@@ -138,6 +141,7 @@ void Grid3dDlg::setRotateZ(int val)
 void Grid3dDlg::setRotateH(int val)
 {
     w->h = val;
+    w->papareData();
     w->update();
     labH->setText(QString::number(sliderH->value()));
 }
@@ -146,6 +150,7 @@ void Grid3dDlg::setRotateH(int val)
 void Grid3dDlg::setAngle(int val)
 {
     w->verticalAngle = val;
+    w->papareData();
     w->update();
     labAngle->setText(QString::number(sliderAngle->value()));
 }
@@ -153,17 +158,20 @@ void Grid3dDlg::setAngle(int val)
 void Grid3dDlg::setRatio(int val)
 {
     w->aspectRatio = val/10.0;
+    w->papareData();
     w->update();
 }
 
 void Grid3dDlg::setNearPlane(int val)
 {
     w->nearPlane = val/1000.0;
+    w->papareData();
     w->update();
 }
 
 void Grid3dDlg::setNarPlane(int val)
 {
     w->farPlane = val;
+    w->papareData();
     w->update();
 }

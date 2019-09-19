@@ -4,24 +4,10 @@
 Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
 {
-//    h = 200;
-//    rotateX = -30;
-//    rotateY = 0;
-//    rotateZ = 0;
+    step = 10;
 
-//    verticalAngle = 90;
-//    aspectRatio = 16/9.0;
-//    nearPlane = 0.1;
-//    farPlane = 1000;
-
-    setMouseTracking(true);
-
-    gridRatio = 2;
-
-    step = 0.1;
-
-    h = 1.225;
-    rotateX = 45;
+    h = 200;
+    rotateX = 30;
     rotateY = 0;
     rotateZ = 0;
 
@@ -29,6 +15,24 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
     aspectRatio = 16/9.0;
     nearPlane = 0.1;
     farPlane = 1000;
+
+    setMouseTracking(true);
+
+    gridRatio = 2;
+
+
+
+//    step = 0.1;
+
+//    h = 1.225;
+//    rotateX = 45;
+//    rotateY = 0;
+//    rotateZ = 0;
+
+//    verticalAngle = 90;
+//    aspectRatio = 16/9.0;
+//    nearPlane = 0.1;
+//    farPlane = 1000;
 
 
 }
@@ -103,6 +107,8 @@ bool Grid3DWidget::papareData()
     if(h <= 0 || rotateX <= 0)
         return false;
 
+
+    matrix = QMatrix4x4();
     //单位米
     maxDis = h/tan(rotateX*M_PI/180);
     float maxZVal = maxDis/cos(rotateX*M_PI/180);
