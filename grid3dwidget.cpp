@@ -102,7 +102,7 @@ void Grid3DWidget::paintGrid(QPainter* painter)
 
 }
 
-bool Grid3DWidget::papareData()
+bool Grid3DWidget::prepareData()
 {
     if(h <= 0 || rotateX <= 0)
         return false;
@@ -204,7 +204,7 @@ QPointF Grid3DWidget::ptScreen2Scene(QPoint screenPt)
 
 void Grid3DWidget::showEvent(QShowEvent* event)
 {
-    papareData();
+    prepareData();
     update();
 }
 

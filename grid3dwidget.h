@@ -45,7 +45,7 @@ public:
 
     QPointF scenePt;
 
-    bool    papareData();
+    bool    prepareData();
     QPoint  ptScene2Screen(QPointF);
     QPointF ptScreen2Scene(QPoint);
 
