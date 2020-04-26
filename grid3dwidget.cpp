@@ -34,7 +34,6 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
 //    nearPlane = 0.1;
 //    farPlane = 1000;
 
-
 }
 
 Grid3DWidget::~Grid3DWidget()
@@ -132,13 +131,13 @@ bool Grid3DWidget::prepareData()
     scaleFactor = this->height()/2 / fabs(ptMiddle.y()-pN.y());//米->像素
 
 
-    QVector3D pNormal(maxDis, maxDis, maxZVal);
+    QVector3D pNormal(maxDis, maxDis, maxZVal);   //再任选一点，三点确定一个平面
     pNormal = matrix.map(pNormal);
 
     pFar = matrix.map(pFar);
     pNear = matrix.map(pNear);
 
-    //平面方程
+    //平面方程（用于反算世界坐标）
     float x1 = pNormal.x();
     float y1 = pNormal.y();
     float z1 = pNormal.z();

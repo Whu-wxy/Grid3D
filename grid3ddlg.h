@@ -21,17 +21,17 @@ class Grid3dDlg : public QDialog
 public:
     Grid3dDlg();
 
-    Grid3DWidget* w;
+    Grid3DWidget* w;            //网格显示控件
 
-    QSlider* sliderX;
-    QSlider* sliderY;
-    QSlider* sliderZ;
-    QSlider* sliderH;
+    QSlider* sliderX;           //相机姿态-X
+    QSlider* sliderY;           //相机姿态-Y
+    QSlider* sliderZ;           //相机姿态-Z
+    QSlider* sliderH;           //相机高度-H
 
-    QSlider* sliderAngle;
-    QSlider* sliderRatio;
-    QSlider* sliderNearPlane;
-    QSlider* sliderNarPlane;
+    QSlider* sliderAngle;      //视角
+    QSlider* sliderRatio;       //比例
+    QSlider* sliderNearPlane;   //近平面距离值
+    QSlider* sliderNarPlane;    //远平面距离值
 
     QLabel*  labX;
     QLabel*  labY;
