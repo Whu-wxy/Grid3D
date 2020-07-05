@@ -4,9 +4,9 @@
 Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
 {
-    step = 10;
+    step = 2;
 
-    h = 200;
+    h = 20;
     rotateX = 30;
     rotateY = 0;
     rotateZ = 0;
@@ -20,20 +20,6 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
 
     gridRatio = 2;
 
-
-
-//    step = 0.1;
-
-//    h = 1.225;
-//    rotateX = 45;
-//    rotateY = 0;
-//    rotateZ = 0;
-
-//    verticalAngle = 90;
-//    aspectRatio = 16/9.0;
-//    nearPlane = 0.1;
-//    farPlane = 1000;
-
 }
 
 Grid3DWidget::~Grid3DWidget()
@@ -43,17 +29,16 @@ Grid3DWidget::~Grid3DWidget()
 
 
 
-void Grid3DWidget::paintEvent(QPaintEvent*)
+void Grid3DWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.drawLine(QPoint(0, this->height()/2), QPoint(this->width(), this->height()/2));
     painter.drawLine(QPoint(this->width()/2, 0), QPoint(this->width()/2, this->height()));
 
-    painter.drawEllipse(ptScene2Screen(QPointF(0.1, 1)), 5, 5);
-    painter.drawEllipse(ptScene2Screen(QPointF(-0.3, 1)), 5, 5);
-
     paintGrid(&painter);
+
+   // paintGeoGrid(&painter);
 }
 
 void Grid3DWidget::paintGrid(QPainter* painter)
@@ -64,74 +49,80 @@ void Grid3DWidget::paintGrid(QPainter* painter)
     painter->drawText(QPoint(0, this->height()/2), QString::number(maxDis));
     painter->drawText(QPoint(0, this->height()), QString::number(minDis));
 
-    painter->translate(this->width()/2-ptMiddle.x(), this->height()/2-ptMiddle.y());
+    painter->translate(this->width()/2, this->height()/2);
+
     for(float i=maxDis; i>=0; i-=step)
     {
         float zVal = maxZVal-(maxDis-i)*cos(rotateX*M_PI/180);
 
-        QVector3D pH1(-gridRatio*(maxDis-0)/2, i, zVal);
+        QVector3D pH1(-maxDis, i, zVal);
         QPointF ph1 = matrix.map(pH1).toPointF();
-        QVector3D pH2(gridRatio*(maxDis-0)/2, i, zVal);
+        QVector3D pH2(maxDis, i, zVal);
         QPointF ph2 = matrix.map(pH2).toPointF();
 
         // H line
-        painter->drawLine(QPoint(ptMiddle.x()+(ph1.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(ph1.y()-ptMiddle.y())*scaleFactor),
-                          QPoint(ptMiddle.x()+(ph2.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(ph2.y()-ptMiddle.y())*scaleFactor));
+        painter->drawLine(QPoint((ph1.x()-ptMiddle.x())*scaleFactor, (ph1.y()-ptMiddle.y())*scaleFactor),
+                          QPoint((ph2.x()-ptMiddle.x())*scaleFactor, (ph2.y()-ptMiddle.y())*scaleFactor));
     }
-    for(float i=0; i<=maxDis; i+=step)
+    for(float i=0; i<=maxDis*gridRatio; i+=step)
     {
         //左竖线
-        QVector3D pV1(gridRatio*i/2, maxDis, maxZVal);
+        QVector3D pV1(i, maxDis, maxZVal);
         QPointF pv1 = matrix.map(pV1).toPointF();
-        QVector3D pV2(gridRatio*i/2, 0, minZVal);
+        QVector3D pV2(i, 0, minZVal);
         QPointF pv2 = matrix.map(pV2).toPointF();
 
         //右竖线
-        QVector3D pV3(-gridRatio*i/2, maxDis, maxZVal);
+        QVector3D pV3(-i, maxDis, maxZVal);
         QPointF pv3 = matrix.map(pV3).toPointF();
-        QVector3D pV4(-gridRatio*i/2, 0, minZVal);
+        QVector3D pV4(-i, 0, minZVal);
         QPointF pv4 = matrix.map(pV4).toPointF();
 
         // V line
-        painter->drawLine(QPoint(ptMiddle.x()+(pv1.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(pv1.y()-ptMiddle.y())*scaleFactor),
-                          QPoint(ptMiddle.x()+(pv2.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(pv2.y()-ptMiddle.y())*scaleFactor));
-        painter->drawLine(QPoint(ptMiddle.x()+(pv3.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(pv3.y()-ptMiddle.y())*scaleFactor),
-                          QPoint(ptMiddle.x()+(pv4.x()-ptMiddle.x())*scaleFactor, ptMiddle.y()+(pv4.y()-ptMiddle.y())*scaleFactor));
+
+        painter->drawLine(QPoint((pv1.x()-ptMiddle.x())*scaleFactor, (pv1.y()-ptMiddle.y())*scaleFactor),
+                          QPoint((pv2.x()-ptMiddle.x())*scaleFactor, (pv2.y()-ptMiddle.y())*scaleFactor));
+        painter->drawLine(QPoint((pv3.x()-ptMiddle.x())*scaleFactor, (pv3.y()-ptMiddle.y())*scaleFactor),
+                          QPoint((pv4.x()-ptMiddle.x())*scaleFactor, (pv4.y()-ptMiddle.y())*scaleFactor));
+
     }
 
 }
+
+
 
 bool Grid3DWidget::prepareData()
 {
     if(h <= 0 || rotateX <= 0)
         return false;
 
-
     matrix = QMatrix4x4();
     //单位米
-    maxDis = h/tan(rotateX*M_PI/180);
-    float maxZVal = maxDis/cos(rotateX*M_PI/180);
+    maxDis = h/tan(rotateX*M_PI/180);               //地理最远距离米（画面中心点对应）
+    float maxZVal = maxDis/cos(rotateX*M_PI/180);    //Z轴上摄像头与地理最远点的距离
 
     //变换矩阵
-    matrix.translate(this->width()/2, this->height(), 0);
+  //  matrix.translate(this->width()/2, this->height(), 0);
+
+    matrix.translate(0, 0, -h);
     matrix.rotate(-rotateX, 1, 0, 0);
     matrix.rotate(rotateY, 0, 1, 0);
     matrix.rotate(rotateZ, 0, 0, 1);
-    matrix.translate(0, 0, -h);
+
     matrix.perspective(verticalAngle,aspectRatio,nearPlane,farPlane);
 
 
-    QVector3D pFar(0, maxDis, maxZVal);
-    ptMiddle = matrix.map(pFar).toPointF();
+    QVector3D pFar(0, maxDis, maxZVal);   //最远点的地理三维坐标（在地面上）
+    ptMiddle = matrix.map(pFar).toPointF();  //这个点转换到摄像头画面中心点
     float near2FarDis = maxZVal * sin(verticalAngle*M_PI/180/2) / sin((rotateX+verticalAngle/2)*M_PI/180);//地面上中心点与最近点米数
-    minDis = maxDis - near2FarDis;
+    minDis = maxDis - near2FarDis;    //画面上最下端和中心点在地理坐标系上的距离米
 
-    QVector3D pNear(0, maxDis-near2FarDis, maxZVal-near2FarDis*cos(rotateX*M_PI/180));
+    QVector3D pNear(0, maxDis-near2FarDis, maxZVal-near2FarDis*cos(rotateX*M_PI/180));//画面上最下端在地理坐标系上对应的坐标
     QPointF pN = matrix.map(pNear).toPointF();
-    scaleFactor = this->height()/2 / fabs(ptMiddle.y()-pN.y());//米->像素
+    scaleFactor = this->height()/2 / fabs(ptMiddle.y()-pN.y());//米->像素 的转换系数
 
 
-    QVector3D pNormal(maxDis, maxDis, maxZVal);   //再任选一点，三点确定一个平面
+    QVector3D pNormal(maxDis, maxDis, maxZVal);   //再任选一点，三点确定一个平面，从屏幕坐标转换回地理坐标时需要
     pNormal = matrix.map(pNormal);
 
     pFar = matrix.map(pFar);

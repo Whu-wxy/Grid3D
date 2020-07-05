@@ -54,6 +54,7 @@ public:
     virtual void    paintEvent(QPaintEvent*);
     void    paintGrid(QPainter*);
 
+
     void    originPaintGrid(QPainter*);  //仅留作纪念
 };
 

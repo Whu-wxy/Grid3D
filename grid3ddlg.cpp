@@ -34,8 +34,8 @@ Grid3dDlg::Grid3dDlg()
 
     sliderH->setTickInterval(1);
     sliderH->setRange(1, 500);
-    sliderH->setValue(200);
-    sliderH->setSliderPosition(200);
+    sliderH->setValue(20);
+    sliderH->setSliderPosition(20);
     // //////////////////////////
     sliderAngle->setTickInterval(1);
     sliderAngle->setRange(5, 180);
