@@ -25,7 +25,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         grid3dwidget.cpp \
-    grid3ddlg.cpp
+    grid3ddlg.cpp \
+    distancebetweenlonandlat.cpp
 
 HEADERS  += grid3dwidget.h \
-    grid3ddlg.h
+    grid3ddlg.h \
+    distancebetweenlonandlat.h

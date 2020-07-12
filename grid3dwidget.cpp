@@ -1,5 +1,6 @@
 #include "grid3dwidget.h"
 #include <math.h>
+#include "distancebetweenlonandlat.h"
 
 Grid3DWidget::Grid3DWidget(QWidget *parent)
     : QWidget(parent)
@@ -20,6 +21,14 @@ Grid3DWidget::Grid3DWidget(QWidget *parent)
 
     gridRatio = 2;
 
+    DistanceBetweenLonAndLat cal;
+    double dis = cal.get_distance(108.391242416486, 34.9073285, 108.3426205, 34.9253171);
+    double angle = cal.get_angle(108.391242416486, 34.9073285, 108.3426205, 34.9253171);
+    //116.391242416486, 39.9073285, 108.9426205, 34.2253171 标准：913925；测：913656
+    //108.391242416486, 34.9073285, 108.9426205, 34.2253171 标准：91017；测：91104.4
+    //108.391242416486, 34.9073285, 108.3426205, 34.9253171 标准：4870.72 测：4863.63
+    qDebug()<<"dis: "<<dis;
+    qDebug()<<"angle: "<<angle;
 }
 
 Grid3DWidget::~Grid3DWidget()
