@@ -45,9 +45,18 @@ void Grid3DWidget::paintEvent(QPaintEvent* event)
     painter.drawLine(QPoint(0, this->height()/2), QPoint(this->width(), this->height()/2));
     painter.drawLine(QPoint(this->width()/2, 0), QPoint(this->width()/2, this->height()));
 
+
     paintGrid(&painter);
 
-   // paintGeoGrid(&painter);
+    painter.drawEllipse(ptScene2Screen(QPointF(1, 33)), 5, 5);
+
+    painter.drawEllipse(ptScene2Screen(QPointF(2, 38.6)), 5, 5);
+    painter.drawEllipse(ptScene2Screen(QPointF(2, 42.6)), 5, 5);
+    painter.drawEllipse(ptScene2Screen(QPointF(2, 46.6)), 5, 5);
+    painter.drawEllipse(ptScene2Screen(QPointF(2, 100.6)), 5, 5);
+
+
+
 }
 
 void Grid3DWidget::paintGrid(QPainter* painter)
@@ -64,9 +73,9 @@ void Grid3DWidget::paintGrid(QPainter* painter)
     {
         float zVal = maxZVal-(maxDis-i)*cos(rotateX*M_PI/180);
 
-        QVector3D pH1(-maxDis, i, zVal);
+        QVector3D pH1(-maxDis*gridRatio, i, zVal);
         QPointF ph1 = matrix.map(pH1).toPointF();
-        QVector3D pH2(maxDis, i, zVal);
+        QVector3D pH2(maxDis*gridRatio, i, zVal);
         QPointF ph2 = matrix.map(pH2).toPointF();
 
         // H line
@@ -95,6 +104,7 @@ void Grid3DWidget::paintGrid(QPainter* painter)
                           QPoint((pv4.x()-ptMiddle.x())*scaleFactor, (pv4.y()-ptMiddle.y())*scaleFactor));
 
     }
+    painter->translate(-this->width()/2, -this->height()/2);
 
 }
 
@@ -160,13 +170,18 @@ bool Grid3DWidget::prepareData()
 QPoint Grid3DWidget::ptScene2Screen(QPointF scenePoint)
 {
     //单位米
-    if(scenePoint.y() > maxDis || scenePoint.y() < 0)
+    float maxZVal = maxDis/cos(rotateX*M_PI/180);
+    if(scenePoint.y() < 0)
         return QPoint(0, 0);
+
+    float zVal = maxZVal;
+    if(scenePoint.y() > maxDis)
+        zVal = maxZVal+(scenePoint.y()-maxDis)*cos(rotateX*M_PI/180);
+    else
+        zVal = maxZVal-(maxDis-scenePoint.y())*cos(rotateX*M_PI/180);
 
     float theltaX = this->width()/2-ptMiddle.x();    //与屏幕中心对齐
     float theltaY = this->height()/2-ptMiddle.y();
-
-    float zVal = maxDis/cos(rotateX*M_PI/180)-(maxDis-scenePoint.y())*cos(rotateX*M_PI/180);
 
     QVector3D scenePt3D(-scenePoint.x(), scenePoint.y(), zVal);
     QPointF screenPt = matrix.map(scenePt3D).toPointF();
@@ -182,7 +197,7 @@ QPointF Grid3DWidget::ptScreen2Scene(QPoint screenPt)
     if(screenPt.y() < this->height()/2)
         return QPoint(0, 0);
 
-    float theltaX = this->width()/2-ptMiddle.x();    //与屏幕中心对齐
+    float theltaX = this->width()/2 -ptMiddle.x();    //与屏幕中心对齐
     float theltaY = this->height()/2-ptMiddle.y();
     screenPt.setX(screenPt.x() - theltaX);
     screenPt.setY(screenPt.y() - theltaY);
@@ -200,6 +215,18 @@ QPointF Grid3DWidget::ptScreen2Scene(QPoint screenPt)
     QVector3D originScenePt3D = invertedMatrix.map(scenePt3D);
     return QPointF(originScenePt3D.x(), originScenePt3D.y());
 }
+
+//QPoint Grid3DWidget::ptScene2Screen(QPointF scenePt)
+//{
+//    float maxZVal = matrix/cos(rotateX*M_PI/180);
+
+//    float zVal = maxZVal-(matrix-scenePt.y())*cos(rotateX*M_PI/180);
+//    QVector3D pScene3D(scenePt.x(), scenePt.y(), zVal);
+
+//    QPoint pScene2Screen = matrix.map(pScene3D).toPoint();
+//    return pScene2Screen;
+//}
+
 
 void Grid3DWidget::showEvent(QShowEvent* event)
 {
